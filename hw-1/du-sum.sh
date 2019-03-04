@@ -1,8 +1,17 @@
 #!/bin/bash
 
-AWK_SCRIPT='$0 !~ /^".*/ && length($3) { sum += $3 } END { print(sum) }'
+AWK_SCRIPT=' $0 !~ /^".*/ && length($4) {
+	if (!($1 in LISTED)) {
+		print($4);
+		LISTED[$1] = 1
+	}
+} '
 
-SIZE_CHILDREN=$(ls -ARQgo | awk "$AWK_SCRIPT")
-SIZE_SELF=$(ls -AQdgo | awk "$AWK_SCRIPT")
+SIZE_CHILDREN=$(ls -ARQgoi | awk "$AWK_SCRIPT")
+SIZE=$(ls -AQdgoi | awk "$AWK_SCRIPT")
 
-echo $(( $SIZE_CHILDREN + $SIZE_SELF ))
+for val in $SIZE_CHILDREN; do
+  SIZE=$(( $SIZE + $val ));
+done
+
+echo $SIZE
