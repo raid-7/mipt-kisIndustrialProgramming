@@ -7,8 +7,14 @@ AWK_SCRIPT=' $0 !~ /^".*/ && length($4) {
 	}
 } '
 
-SIZE_CHILDREN=$(ls -ARQgoi | awk "$AWK_SCRIPT")
-SIZE=$(ls -AQdgoi | awk "$AWK_SCRIPT")
+if [[ -n "$1" ]]; then
+	DIR="$1"
+else
+	DIR="."
+fi
+
+SIZE_CHILDREN=$(ls -ARQgoi "$DIR" | awk "$AWK_SCRIPT")
+SIZE=$(ls -AQdgoi "$DIR" | awk "$AWK_SCRIPT")
 
 for val in $SIZE_CHILDREN; do
   SIZE=$(( $SIZE + $val ));
